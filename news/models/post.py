@@ -13,6 +13,7 @@ class Post(Entity):
     metatitle = models.CharField(db_column='metaTitle', max_length=100, blank=True, null=True)
     slug = models.CharField(unique=True, max_length=100)
     summary = models.TextField(blank=True, null=True)
+    summary_en = models.TextField(blank=True, null=True)
     published = models.IntegerField()
     published_at = models.DateTimeField(blank=True, null=True)
     content_ar = models.TextField(blank=True, null=True)
