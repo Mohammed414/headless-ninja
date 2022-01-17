@@ -1,2 +1,2 @@
-from .others import *
-from .post import *
+from .category_models import *
+from .article_models import *

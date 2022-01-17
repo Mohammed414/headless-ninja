@@ -1,9 +1,8 @@
 from django.contrib import admin
 
-from news.models import Post, PostCategory, PostTag, Category, Tag
+from news.models import Article, Category
 
-admin.site.register(Post)
-admin.site.register(PostCategory)
-admin.site.register(PostTag)
+admin.site.register(Article)
+#admin.site.register(PostCategory)
 admin.site.register(Category)
-admin.site.register(Tag)
+

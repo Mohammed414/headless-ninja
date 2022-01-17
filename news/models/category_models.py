@@ -11,16 +11,12 @@ class Category(Entity):
                                blank=True,
                                on_delete=models.CASCADE)
     title = models.CharField(max_length=75)
-    metatitle = models.CharField(max_length=100, blank=True, null=True)
     slug = models.CharField(max_length=100)
-    content = models.TextField(blank=True, null=True)
+    description = models.TextField(blank=True, null=True)
+
     class Meta:
         verbose_name = 'Category'
         verbose_name_plural = 'Categories'
 
-
-class Tag(Entity):
-    title = models.CharField(max_length=75)
-    metatitle = models.CharField(max_length=100, blank=True, null=True)
-    slug = models.CharField(max_length=100)
-    content = models.TextField(blank=True, null=True)
+    def __str__(self):
+        return self.title
