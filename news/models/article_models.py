@@ -36,8 +36,6 @@ class Article(Entity):
 
     content = models.TextField()
 
-    image = models.ImageField('image', upload_to='articles_images/')
-
     objects = models.Manager()
     article_objects = ArticleObjects()  # this is a custom manager
 
@@ -52,3 +50,17 @@ class Article(Entity):
     def save(self, *args, **kwargs):
         self.slug = slugify(self.title, allow_unicode=True)
         super(Article, self).save(*args, **kwargs)
+
+
+class Image(Entity):
+    image_url = models.ImageField('image', upload_to='articles_images/')
+
+    def __str__(self):
+        return self.image_url.name
+
+
+class ArticleImage(Entity):
+    article_id = models.ForeignKey(Article, on_delete=models.DO_NOTHING)
+    image_id = models.ForeignKey(Image, on_delete=models.DO_NOTHING)
+
+
