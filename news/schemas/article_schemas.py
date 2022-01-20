@@ -19,7 +19,6 @@ class ArticleOut(UUIDSchema):
 
 
 class ArticleIn(Schema):
-    author_id: UUID4
     title: str
     language: str
     category_id: UUID4
@@ -29,3 +28,6 @@ class ArticleIn(Schema):
     published_at: datetime
     content: str
 
+
+class ArticleSchema(ArticleIn):
+    id: UUID4

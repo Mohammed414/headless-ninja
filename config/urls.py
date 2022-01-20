@@ -17,12 +17,13 @@ from django.contrib import admin
 from django.urls import path
 
 from account.controllers import account_controller
-from news.controllers import article_controller
+from news.controllers import article_controller, category_controller
 from ninja import NinjaAPI
 
 api = NinjaAPI()
 api.add_router('auth', account_controller)
 api.add_router('', article_controller)
+api.add_router('', category_controller)
 
 urlpatterns = [
     path('admin/', admin.site.urls),

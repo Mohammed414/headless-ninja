@@ -17,10 +17,8 @@ class AccountOut(Schema):
     last_name: str
     email: EmailStr
     phone_number: Optional[str]
-    address1: str = None
-    address2: str = None
-    company_name: str = None
-    company_website: str = None
+
+    is_staff: bool
 
 
 class TokenOut(Schema):
@@ -41,15 +39,9 @@ class AccountUpdate(Schema):
     first_name: str
     last_name: str
     phone_number: Optional[str]
-    address1: str
-    address2: str
-    company_name: str
-    company_website: str
 
 
 class ChangePasswordSchema(Schema):
     old_password: str
     new_password1: str
     new_password2: str
-
-

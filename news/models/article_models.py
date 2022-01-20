@@ -60,7 +60,7 @@ class Image(Entity):
 
 
 class ArticleImage(Entity):
-    article_id = models.ForeignKey(Article, on_delete=models.DO_NOTHING)
-    image_id = models.ForeignKey(Image, on_delete=models.DO_NOTHING)
+    article_id = models.ForeignKey(Article, on_delete=models.CASCADE)
+    image_id = models.ForeignKey(Image, on_delete=models.CASCADE)
 
 

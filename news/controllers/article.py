@@ -3,6 +3,8 @@ from typing import List, Optional
 from ninja import Router, File
 from django.contrib.auth import get_user_model
 from pydantic.types import UUID4
+
+from account.authorization import GlobalAuth
 from config.utils.schemas import MessageOut
 from news.models import Article, Category, Image, ArticleImage
 from news.schemas import ArticleOut, ArticleIn
@@ -45,28 +47,47 @@ def retrieve_article(request, article_id: UUID4):
 
 # TODO authentication
 # post an article with one or multiple images
-@article_controller.post("articles", response={
-    200: ArticleOut
+@article_controller.post("articles", auth=GlobalAuth(), response={
+    201: ArticleOut,
+    401: MessageOut
 })
 def post_article(request, article_in: ArticleIn, images: List[UploadedFile] = File(...)):
-    article = Article(**article_in.dict())
-    article.save()
-    for image in images:
-        image = Image(image_url=image)
-        image.save()
-        article_image = ArticleImage(article_id=article, image_id=image)
-        article_image.save()
-    return article
+    # checks if the token is valid or exists
+    if 'pk' not in request.auth:
+        return 401, {'detail': 'unauthorized'}
+    # gets the user from pk
+    user = User.objects.filter(id=request.auth['pk'])[0]
+    if user.is_staff:
+        article = Article(**article_in.dict(), author_id=user.id)
+        article.save()
+        for image in images:
+            image = Image(image_url=image)
+            image.save()
+            article_image = ArticleImage(article_id=article, image_id=image)
+            article_image.save()
+        return 201, article
+    return 401, {'detail': 'unauthorized'}
+
+
 
 # TODO Update post endpoint + authentication
+@article_controller.put("/articles/{id}", response={
+    200: MessageOut
+})
+def update_article(request, id: UUID4, article_in: ArticleIn):
+    article = get_object_or_404(Article, id=id)
+    for attr, value in article_in.dict().items():
+        setattr(article, attr, value)
+    article.save()
+    return {"detail": "success"}
 
 
 # TODO Delete Post endpoint + authentication
+@article_controller.delete("/articles/{id}", response={
+    204: MessageOut,
+})
+def delete_article(request, id: UUID4):
+    article = get_object_or_404(Article, id=id)
+    article.delete()
+    return 204, {"detail": ""}
 
-# TODO GET ALL CATEGORIES
-
-# TODO Create Category
-
-# TODO update a category
-
-# TODO delete a category
