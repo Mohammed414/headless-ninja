@@ -69,7 +69,6 @@ def post_article(request, article_in: ArticleIn, images: List[UploadedFile] = Fi
     return 401, {'detail': 'unauthorized'}
 
 
-
 # TODO Update post endpoint + authentication
 @article_controller.put("/articles/{id}", response={
     200: MessageOut
@@ -90,4 +89,3 @@ def delete_article(request, id: UUID4):
     article = get_object_or_404(Article, id=id)
     article.delete()
     return 204, {"detail": ""}
-
