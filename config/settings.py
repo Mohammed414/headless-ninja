@@ -14,7 +14,6 @@ from pathlib import Path
 from decouple import config
 from corsheaders.defaults import default_headers
 
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -29,8 +28,6 @@ DEBUG = config('DEBUG')
 ALLOWED_HOSTS = []
 # Application definition
 
-CORS_ALLOW_ALL_ORIGINS = True
-CORS_ALLOW_HEADERS = default_headers + ("Content-Range",)
 
 
 INSTALLED_APPS = [
@@ -46,8 +43,8 @@ INSTALLED_APPS = [
     'news'
 ]
 
-
 MIDDLEWARE = [
+    # these are two core's library middle wares and some seperate middleware for react admin
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
     "news.middleware.MyMiddleware",
@@ -62,6 +59,10 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'config.urls'
+
+CORS_ALLOWED_ORIGINS = [
+    'http://127.0.0.1:3000',
+]
 
 TEMPLATES = [
     {
@@ -80,7 +81,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'config.wsgi.application'
-
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases

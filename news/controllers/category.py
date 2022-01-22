@@ -12,7 +12,7 @@ category_controller = Router(tags=["Category"])
 
 
 # TODO GET ALL CATEGORIES
-@category_controller.get("/category", response={
+@category_controller.get("/categories", response={
     200: List[CategorySchema]
 })
 def get_categories(request):
@@ -20,7 +20,7 @@ def get_categories(request):
 
 
 # TODO Create Category
-@category_controller.post("/category", response={
+@category_controller.post("/categories", response={
     201: CategorySchema
 })
 def create_category(request, category_in: CategoryIn):
@@ -30,7 +30,7 @@ def create_category(request, category_in: CategoryIn):
 
 
 # TODO update a category
-@category_controller.put("/category/{category_id}", response={
+@category_controller.put("/categories/{category_id}", response={
     200: MessageOut,
     404: MessageOut
 })
@@ -43,7 +43,7 @@ def update_category(request, category_id: UUID4, category_in: CategoryIn):
 
 
 # TODO delete a category
-@category_controller.delete("/category/{category_id}", response={204: MessageOut,
+@category_controller.delete("/categories/{category_id}", response={204: MessageOut,
                                                                  404: MessageOut
                                                                  })
 def delete_category(request, category_id: UUID4):

@@ -1,3 +1,4 @@
+import sys
 from typing import List, Optional
 
 from ninja import Router, File
@@ -11,6 +12,8 @@ from news.schemas import ArticleOut, ArticleIn
 from django.shortcuts import get_object_or_404
 from django.db.models import Q
 from ninja.files import UploadedFile
+from django.utils.encoding import uri_to_iri
+import json
 
 article_controller = Router(tags=["Articles"])
 
@@ -18,21 +21,34 @@ User = get_user_model()
 
 
 @article_controller.get("articles", response={200: List[ArticleOut], 404: MessageOut})
-def get_articles(request, language: Optional[str] = None, category: Optional[str] = None, q: Optional[str] = None):
+def get_articles(request, filter: Optional[str] = None, category: Optional[str] = None):
     articles_qs = Article.objects.all()
-    # filters language
-    if language and language in ["ar", "en"]:
-        articles_qs = articles_qs.filter(language=language)
+
+    # if filter parameter is provided
+    if filter:
+        try:
+            filter_params = json.loads(filter)
+            # search
+            if "q" in filter_params:
+                q = filter_params["q"]
+                articles_qs = articles_qs.filter(
+                    Q(title__icontains=q) | Q(content__icontains=q)
+                )
+            # language
+            if "lang" in filter_params:
+                lang = filter_params["lang"]
+                if lang in ["en", "ar"]:
+                    articles_qs = articles_qs.filter(language=lang)
+
+        except KeyError:
+            pass
+        except json.decoder.JSONDecodeError:
+            pass
 
     # filters category
     if category and category in list(Category.objects.values_list('slug', flat=True)):
         articles_qs = articles_qs.filter(category=Category.objects.get(slug=category).id)
 
-    # handles search
-    if q:
-        articles_qs = articles_qs.filter(
-            Q(title__icontains=q) | Q(content__icontains=q)
-        )
     return articles_qs
 
 
