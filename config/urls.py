@@ -22,7 +22,7 @@ from ninja import NinjaAPI
 
 api = NinjaAPI()
 api.add_router('auth', account_controller)
-api.add_router('', article_controller)
+api.add_router('articles', article_controller)
 api.add_router('', category_controller)
 
 urlpatterns = [

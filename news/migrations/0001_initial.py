@@ -45,7 +45,7 @@ class Migration(migrations.Migration):
                 ('status', models.CharField(choices=[('draft', 'Draft'), ('published', 'Published')], default='published', max_length=10)),
                 ('published_at', models.DateTimeField(blank=True, null=True)),
                 ('content', models.TextField()),
-                ('image', models.ImageField(upload_to='articles_images/', verbose_name='image')),
+                ('image', models.ImageField(upload_to='news/', verbose_name='image')),
                 ('author', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
                 ('category', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='news.category')),
             ],

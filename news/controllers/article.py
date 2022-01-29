@@ -1,4 +1,6 @@
 import sys
+import time
+import uuid
 from typing import List, Optional
 
 from ninja import Router, File
@@ -8,7 +10,7 @@ from pydantic.types import UUID4
 from account.authorization import GlobalAuth
 from config.utils.schemas import MessageOut
 from news.models import Article, Category, Image, ArticleImage
-from news.schemas import ArticleOut, ArticleIn
+from news.schemas import ArticleOut, ArticleIn, ImagesOut
 from django.shortcuts import get_object_or_404
 from django.db.models import Q
 from ninja.files import UploadedFile
@@ -20,7 +22,7 @@ article_controller = Router(tags=["Articles"])
 User = get_user_model()
 
 
-@article_controller.get("articles", response={200: List[ArticleOut], 404: MessageOut})
+@article_controller.get("", response={200: List[ArticleOut], 404: MessageOut})
 def get_articles(request, filter: Optional[str] = None, category: Optional[str] = None):
     articles_qs = Article.objects.all()
 
@@ -39,21 +41,22 @@ def get_articles(request, filter: Optional[str] = None, category: Optional[str] 
                 lang = filter_params["lang"]
                 if lang in ["en", "ar"]:
                     articles_qs = articles_qs.filter(language=lang)
+            # category filter
+            if "cat" in filter_params:
+                cat = filter_params["cat"]
+                if cat in list(Category.objects.values_list('slug', flat=True)):
+                    articles_qs = articles_qs.filter(category=Category.objects.get(slug=cat).id)
 
         except KeyError:
             pass
         except json.decoder.JSONDecodeError:
             pass
 
-    # filters category
-    if category and category in list(Category.objects.values_list('slug', flat=True)):
-        articles_qs = articles_qs.filter(category=Category.objects.get(slug=category).id)
-
     return articles_qs
 
 
 # get an article with an id
-@article_controller.get("/articles/{article_id}", response={
+@article_controller.get("{article_id}", response={
     200: ArticleOut,
     404: MessageOut
 })
@@ -61,22 +64,47 @@ def retrieve_article(request, article_id: UUID4):
     return get_object_or_404(Article, id=article_id)
 
 
-# TODO authentication
+# get images of an article
+@article_controller.get("images/{article_id}", response={
+    200: ImagesOut,
+    404: MessageOut
+})
+def retrieve_article_images(request, article_id: UUID4):
+    post_images = ArticleImage.objects.filter(article_id=article_id)
+    if not post_images:
+        return {"detail": "Error"}
+    images_urls = []
+    for link in post_images:
+        # get the right image url for each image
+        """
+        could be better. for now it's just a duct tape solution
+        """
+        images_urls.append(link.image_id.__str__()[4:])
+    print(images_urls)
+    return {"images": images_urls}
+
+
+# TODO AUTH
 # post an article with one or multiple images
-@article_controller.post("articles", auth=GlobalAuth(), response={
+@article_controller.post("", response={
     201: ArticleOut,
     401: MessageOut
 })
+# images: List[UploadedFile] = File(...)
 def post_article(request, article_in: ArticleIn, images: List[UploadedFile] = File(...)):
-    # checks if the token is valid or exists
-    if 'pk' not in request.auth:
-        return 401, {'detail': 'unauthorized'}
-    # gets the user from pk
-    user = User.objects.filter(id=request.auth['pk'])[0]
+    # # checks if the token is valid or exists
+    # if 'pk' not in request.auth:
+    #     return 401, {'detail': 'unauthorized'}
+    # # gets the user from pk
+    #    user = User.objects.filter(id=request.auth['pk'])[0]
+    user = User.objects.filter(id="8790ed93-0c8d-4354-8f75-50caa970648f")[0]
+
     if user.is_staff:
         article = Article(**article_in.dict(), author_id=user.id)
         article.save()
         for image in images:
+            # make a random image name using uuid4 + image extension
+            image.name = f"{uuid.uuid4().hex}.{image.name.split('.')[1]}"
             image = Image(image_url=image)
             image.save()
             article_image = ArticleImage(article_id=article, image_id=image)
@@ -85,23 +113,24 @@ def post_article(request, article_in: ArticleIn, images: List[UploadedFile] = Fi
     return 401, {'detail': 'unauthorized'}
 
 
-# TODO Update post endpoint + authentication
-@article_controller.put("/articles/{id}", response={
-    200: MessageOut
+# TODO AUTH
+@article_controller.put("{article_id}", response={
+    200: ArticleOut
 })
-def update_article(request, id: UUID4, article_in: ArticleIn):
-    article = get_object_or_404(Article, id=id)
+def update_article(request, article_id: UUID4, article_in: ArticleIn):
+    article = get_object_or_404(Article, id=article_id)
     for attr, value in article_in.dict().items():
         setattr(article, attr, value)
     article.save()
-    return {"detail": "success"}
+    return article
 
 
-# TODO Delete Post endpoint + authentication
-@article_controller.delete("/articles/{id}", response={
+# TODO AUTH
+@article_controller.delete("{article_id}", response={
     204: MessageOut,
 })
-def delete_article(request, id: UUID4):
-    article = get_object_or_404(Article, id=id)
+def delete_article(request, article_id: UUID4):
+    article = get_object_or_404(Article, id=article_id)
     article.delete()
     return 204, {"detail": ""}
+

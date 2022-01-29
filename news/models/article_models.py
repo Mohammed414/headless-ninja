@@ -53,7 +53,7 @@ class Article(Entity):
 
 
 class Image(Entity):
-    image_url = models.ImageField('image', upload_to='articles_images/')
+    image_url = models.ImageField('image', upload_to='news/static/news/')
 
     def __str__(self):
         return self.image_url.name
@@ -62,5 +62,3 @@ class Image(Entity):
 class ArticleImage(Entity):
     article_id = models.ForeignKey(Article, on_delete=models.CASCADE)
     image_id = models.ForeignKey(Image, on_delete=models.CASCADE)
-
-

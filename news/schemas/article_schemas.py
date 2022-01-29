@@ -1,5 +1,7 @@
 from datetime import datetime
-from typing import Optional
+from typing import Optional, List
+from ninja.files import UploadedFile
+from ninja import File
 
 from ninja import Schema
 from pydantic.networks import EmailStr
@@ -49,3 +51,7 @@ class ArticleIn(Schema):
 
 class ArticleSchema(ArticleIn):
     id: UUID4
+
+
+class ImagesOut(Schema):
+    images: List[str]
