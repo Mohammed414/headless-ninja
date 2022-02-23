@@ -22,6 +22,11 @@ class Category(Schema):
     description: str
 
 
+class CategoryOut(Schema):
+    title: str
+    slug: str
+
+
 class AccountOut(Schema):
     first_name: str
     last_name: str
@@ -30,7 +35,8 @@ class AccountOut(Schema):
 
 
 class ArticleOut(ModelSchema):
-    category: Category
+    category: CategoryOut
+    images: Optional[List[str]] = []
 
     class Config:
         model = Article

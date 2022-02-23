@@ -67,4 +67,4 @@ def delete_category(request, category_id: UUID4):
         post.save()
 
     category.delete()
-    return 204, {"detail": ""}
+    return 204, {"message": ""}
