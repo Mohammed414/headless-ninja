@@ -16,8 +16,6 @@ from django.db.models import Q
 from ninja.files import UploadedFile
 import json
 
-
-
 article_controller = Router(tags=["Articles"])
 
 User = get_user_model()
@@ -123,6 +121,7 @@ def retrieve_article(request, article_id: UUID4):
     article = get_object_or_404(Article, id=article_id)
     article.__dict__['images'] = get_article_images(article_id)
     return article
+
 
 #
 # # get images of an article

@@ -53,7 +53,7 @@ class Article(Entity):
 
 
 class Image(Entity):
-    image_url = models.ImageField('image', upload_to='news/static/news/')
+    image_url = models.ImageField('image', upload_to='images')
 
     def __str__(self):
         return self.image_url.name
