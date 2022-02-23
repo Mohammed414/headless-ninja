@@ -40,7 +40,7 @@ class ArticleOut(ModelSchema):
 
     class Config:
         model = Article
-        model_fields = ["id", "title", "language", "category", "meta_title", "meta_description", "published_at",
+        model_fields = ["id", "title", "language", "category", "published_at",
                         "content"]
 
 
@@ -48,8 +48,6 @@ class ArticleIn(Schema):
     title: str
     language: str
     category_id: UUID4
-    meta_title: str
-    meta_description: str
     status: str
     published_at: datetime
     content: str

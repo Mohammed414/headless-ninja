@@ -23,9 +23,9 @@ User = get_user_model()
 
 @article_controller.get("", response={200: List[ArticleOut], 404: MessageOut})
 def get_articles(request, range: Optional[str] = None, page: Optional[int] = 1, filter: Optional[str] = None,
-                 category: Optional[str] = None):
-    articles_qs = Article.objects.all()
-
+                 category: Optional[str] = "uni"):
+    category = get_object_or_404(Category, slug=category)
+    articles_qs = Article.objects.all().filter(category_id=category.id)
     # if filter parameter is provided
     if filter:
         try:
@@ -121,27 +121,6 @@ def retrieve_article(request, article_id: UUID4):
     article = get_object_or_404(Article, id=article_id)
     article.__dict__['images'] = get_article_images(article_id)
     return article
-
-
-#
-# # get images of an article
-# @article_controller.get("images/{article_id}", response={
-#     200: ImagesOut,
-#     404: MessageOut
-# })
-# def retrieve_article_images(request, article_id: UUID4):
-#     post_images = ArticleImage.objects.filter(article_id=article_id)
-#     if not post_images:
-#         return {"message": "Error"}
-#     images_urls = []
-#     for link in post_images:
-#         # get the right image url for each image
-#         """
-#         could be better. for now it's just a duct tape solution
-#         """
-#         images_urls.append(link.image_id.__str__()[4:])
-#     print(images_urls)
-#     return {"images": images_urls}
 
 
 # TODO AUTH

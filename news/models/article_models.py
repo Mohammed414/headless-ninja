@@ -22,14 +22,15 @@ class Article(Entity):
     )
     author = models.ForeignKey(User, on_delete=models.CASCADE)
 
-    title = models.CharField(max_length=75)
+    title = models.CharField(max_length=200)
     language = models.CharField(max_length=7, choices=language_options, default='ar')
 
     category = models.ForeignKey(Category, on_delete=models.PROTECT)
 
     slug = models.SlugField(max_length=250, editable=False)
-    meta_title = models.CharField(max_length=100, blank=True, null=True)
-    meta_description = models.TextField(blank=True, null=True)
+    # removed for now
+    # meta_title = models.CharField(max_length=100, blank=True, null=True)
+    # meta_description = models.TextField(blank=True, null=True)
 
     status = models.CharField(max_length=10, choices=options, default='published')
     published_at = models.DateTimeField(blank=True, null=True)
