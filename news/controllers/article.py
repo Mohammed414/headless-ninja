@@ -22,10 +22,8 @@ User = get_user_model()
 
 
 @article_controller.get("", response={200: List[ArticleOut], 404: MessageOut})
-def get_articles(request, range: Optional[str] = None, page: Optional[int] = 1, filter: Optional[str] = None,
-                 category: Optional[str] = "uni"):
-    category = get_object_or_404(Category, slug=category)
-    articles_qs = Article.objects.all().filter(category_id=category.id)
+def get_articles(request, range: Optional[str] = None, page: Optional[int] = 1, filter: Optional[str] = None):
+    articles_qs = Article.objects.all()
     # if filter parameter is provided
     if filter:
         try:

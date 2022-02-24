@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, date
 from typing import Optional, List
 from ninja.files import UploadedFile
 from ninja import File
@@ -37,10 +37,11 @@ class AccountOut(Schema):
 class ArticleOut(ModelSchema):
     category: CategoryOut
     images: Optional[List[str]] = []
+    published_at: date
 
     class Config:
         model = Article
-        model_fields = ["id", "title", "language", "category", "published_at",
+        model_fields = ["id", "title", "language", "category",
                         "content"]
 
 
