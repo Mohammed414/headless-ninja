@@ -23,7 +23,7 @@ User = get_user_model()
 
 @article_controller.get("", response={200: List[ArticleOut], 404: MessageOut})
 def get_articles(request, range: Optional[str] = None, page: Optional[int] = 1, filter: Optional[str] = None):
-    articles_qs = Article.objects.all()
+    articles_qs = Article.objects.all().filter(language='en')
     # if filter parameter is provided
     if filter:
         try:
