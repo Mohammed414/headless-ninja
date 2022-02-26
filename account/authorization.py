@@ -13,11 +13,14 @@ TIME_DELTA = timedelta(days=120)
 class GlobalAuth(HttpBearer):
     def authenticate(self, request, token):
         try:
-            user_pk = jwt.decode(token=token, key=settings.SECRET_KEY, algorithms=['HS256'])
+            payload = jwt.decode(token=token, key=settings.SECRET_KEY, algorithms=['HS256'])
+            user_pk = payload.get('pk')
+            if user_pk is None:
+                return None
         except JWTError:
-            return {'token': 'unauthorized'}
+            return None
         if user_pk:
-            return {'pk': str(user_pk['pk'])}
+            return user_pk
 
 
 def get_tokens_for_user(user):

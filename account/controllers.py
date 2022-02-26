@@ -59,7 +59,7 @@ def signin(request, signin_in: SigninSchema):
 
 @account_controller.get('', auth=GlobalAuth(), response=AccountOut)
 def me(request):
-    return get_object_or_404(User, id=request.auth['pk'])
+    return get_object_or_404(User, id=request.auth)
 
 
 @account_controller.put('', auth=GlobalAuth(), response={
@@ -67,8 +67,8 @@ def me(request):
 
 })
 def update_account(request, update_in: AccountUpdate):
-    User.objects.filter(id=request.auth['pk']).update(**update_in.dict())
-    return get_object_or_404(User, id=request.auth['pk'])
+    User.objects.filter(id=request.auth).update(**update_in.dict())
+    return get_object_or_404(User, id=request.auth)
 
 
 @account_controller.post('change-password', auth=GlobalAuth(), response={
@@ -79,7 +79,7 @@ def change_password(request, password_update_in: ChangePasswordSchema):
     # user = authenticate(get_object_or_404(User, id=request.auth['pk']).email, password_update_in.old_password)
     if password_update_in.new_password1 != password_update_in.new_password2:
         return 400, {'message': 'passwords do not match'}
-    user = get_object_or_404(User, id=request.auth['pk'])
+    user = get_object_or_404(User, id=request.auth)
     is_it_him = user.check_password(password_update_in.old_password)
 
     if not is_it_him:

@@ -128,11 +128,8 @@ def retrieve_article(request, article_id: UUID4):
     401: MessageOut
 })
 def post_article(request, article_in: ArticleIn, images: List[UploadedFile] = File(...)):
-    # checks if the token is valid or exists
-    if 'pk' not in request.auth:
-        return 401, {'message': 'unauthorized'}
     # gets the user from pk
-    user = User.objects.filter(id=request.auth['pk'])[0]
+    user = get_object_or_404(User, pk=request.auth)
     # print user email
     print(user.email)
 
