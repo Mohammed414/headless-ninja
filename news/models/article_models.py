@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth import get_user_model
+from django.utils.safestring import mark_safe
+
 from config.utils.models import Entity
 from news.models import Category
 from django.utils.text import slugify
@@ -36,6 +38,12 @@ class Article(Entity):
     published_at = models.DateTimeField(blank=True, null=True)
 
     content = models.TextField()
+
+    @property
+    def thumbnail_preview(self):
+        if self.thumbnail:
+            return mark_safe('<img src="{}" width="300" height="300" />'.format(self.thumbnail.url))
+        return ""
 
     objects = models.Manager()
     article_objects = ArticleObjects()  # this is a custom manager

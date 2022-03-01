@@ -2,6 +2,7 @@ import uuid
 from typing import List, Optional
 
 from django.core.paginator import Paginator, EmptyPage
+from django.utils.html import strip_tags
 from ninja import Router, File
 from django.contrib.auth import get_user_model
 from pydantic.types import UUID4
@@ -23,7 +24,8 @@ User = get_user_model()
 
 @article_controller.get("", response={200: List[ArticleOut], 404: MessageOut})
 def get_articles(request, range: Optional[str] = None, page: Optional[int] = 1, filter: Optional[str] = None):
-    articles_qs = Article.objects.all().filter(language='en')
+    # get all articles that are english and status is published with no order
+    articles_qs = Article.objects.filter(Q(status='published'), Q(language='en'))
     # if filter parameter is provided
     if filter:
         try:
@@ -134,6 +136,7 @@ def post_article(request, article_in: ArticleIn, images: List[UploadedFile] = Fi
     print(user.email)
 
     if user.is_staff:
+        article_in.content = strip_tags(article_in.content)
         article = Article(**article_in.dict(), author_id=user.id)
         article.save()
         for image in images:
@@ -148,10 +151,12 @@ def post_article(request, article_in: ArticleIn, images: List[UploadedFile] = Fi
 
 
 # TODO AUTH
-@article_controller.put("{article_id}", response={
+@article_controller.put("{article_id}", auth=GlobalAuth, response={
     200: ArticleOut
 })
 def update_article(request, article_id: UUID4, article_in: ArticleIn):
+    # check if the article belong to the user
+
     article = get_object_or_404(Article, id=article_id)
     for attr, value in article_in.dict().items():
         setattr(article, attr, value)
