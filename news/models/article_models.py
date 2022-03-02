@@ -30,10 +30,6 @@ class Article(Entity):
     category = models.ForeignKey(Category, on_delete=models.PROTECT)
 
     slug = models.SlugField(max_length=250, editable=False)
-    # removed for now
-    # meta_title = models.CharField(max_length=100, blank=True, null=True)
-    # meta_description = models.TextField(blank=True, null=True)
-
     status = models.CharField(max_length=10, choices=options, default='published')
     published_at = models.DateTimeField(blank=True, null=True)
 

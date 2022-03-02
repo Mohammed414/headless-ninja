@@ -1,3 +1,5 @@
+import uuid
+
 from django.contrib import admin
 from django.forms import Textarea
 from django.utils.html import format_html
@@ -30,27 +32,17 @@ class ArticleImageInline(admin.StackedInline):
         )
 
 
-# class ArticleImageInline(admin.StackedInline):
-#     # show article image in article admin page
-#     def image_tag(self, obj):
-#         print("2")
-#         return mark_safe(f'<img src="{obj.image.url}" width="100" height="100" />')
-#     readonly_fields = ('image_tag',)
-#     model = ArticleImage
-#     extra = 1
-
-
 @admin.register(Article)
 class ArticleAdmin(admin.ModelAdmin):
     list_display = 'author', 'language', 'status', 'title', 'category', "published_at"
-    list_filter = ('category',)
+    list_filter = ('category', 'status', 'language', 'author')
     search_fields = ('title', 'content')
     prepopulated_fields = {'title': ('title',)}
     ordering = ('-published_at',)
     inlines = [ArticleImageInline]
-
+    exclude = ('images',)
     """
-    For non-superuser users, only show articles that are theirs 
+    For non-superuser users, only show articles that are theirs
     """
 
     def get_queryset(self, request):
@@ -67,7 +59,13 @@ class ArticleAdmin(admin.ModelAdmin):
     def save_model(self, request, obj, form, change):
         if not request.user.is_superuser:
             obj.author = request.user
-        obj.save()
+        super().save_model(request, obj, form, change)
+
+    # remove author_id from the list of fields if the user is not superuser
+    def get_fields(self, request, obj=None):
+        if not request.user.is_superuser:
+            return 'title', 'content', 'category', 'status', 'language', 'published_at'
+        return 'author', 'title', 'content', 'category', 'status', 'language', 'published_at'
 
 
 # @admin.register(Category)
@@ -88,6 +86,14 @@ class ArticleAdmin(admin.ModelAdmin):
 @admin.register(Image)
 class ImageAdmin(admin.ModelAdmin):
     readonly_fields = ["preview"]
+
+    # make the name of the image a uuid before saving
+    def save_model(self, request, obj, form, change):
+        print(obj.image_url)
+        # change the image_url to a uuid without changing the extension
+        obj.image_url = uuid.uuid4().hex + obj.image_url.name.split('.')[-1]
+
+        super().save_model(request, obj, form, change)
 
     def preview(self, obj):
         return mark_safe('<a href={url}><img src="{url}" width="{width}" height={height} /></a>'.format(
