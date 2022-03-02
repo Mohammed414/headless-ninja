@@ -39,11 +39,7 @@ class Article(Entity):
 
     content = models.TextField()
 
-    @property
-    def thumbnail_preview(self):
-        if self.thumbnail:
-            return mark_safe('<img src="{}" width="300" height="300" />'.format(self.thumbnail.url))
-        return ""
+    images = models.ManyToManyField('Image', blank=True)
 
     objects = models.Manager()
     article_objects = ArticleObjects()  # this is a custom manager
@@ -71,3 +67,6 @@ class Image(Entity):
 class ArticleImage(Entity):
     article_id = models.ForeignKey(Article, on_delete=models.CASCADE)
     image_id = models.ForeignKey(Image, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.article_id.title
