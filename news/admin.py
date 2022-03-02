@@ -87,14 +87,6 @@ class ArticleAdmin(admin.ModelAdmin):
 class ImageAdmin(admin.ModelAdmin):
     readonly_fields = ["preview"]
 
-    # make the name of the image a uuid before saving
-    def save_model(self, request, obj, form, change):
-        print(obj.image_url)
-        # change the image_url to a uuid without changing the extension
-        obj.image_url = uuid.uuid4().hex + obj.image_url.name.split('.')[-1]
-
-        super().save_model(request, obj, form, change)
-
     def preview(self, obj):
         return mark_safe('<a href={url}><img src="{url}" width="{width}" height={height} /></a>'.format(
             url=obj.image_url.url,
