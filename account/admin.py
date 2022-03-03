@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin, UserAdmin
+from guardian.admin import GuardedModelAdmin
 
 from account.forms import UserAdminChangeForm, UserAdminCreationForm
 from account.models import User
@@ -36,17 +37,19 @@ from account.models import User
 #     ordering = ('email',)
 #     filter_horizontal = ()
 
-@admin.register(User)
-class MyUserAdmin(UserAdmin):
+class AuthorAdmin(UserAdmin):
     ordering = ('email',)
     list_display = ('email', 'first_name', 'last_name', 'is_active', 'is_staff', 'is_superuser',)
     list_filter = ('is_superuser', 'is_staff')
     fieldsets = (
-        (None, {'fields': ('email', 'password')}),
+        ("Account", {'fields': ('email', 'password')}),
+
         ('Personal info', {'fields': (
             'first_name', 'last_name', 'phone_number')}),
+
         ('Permissions',
          {'fields': ('is_active', 'is_superuser', 'is_staff', 'is_verified', 'groups', 'user_permissions',)}),
+
         ('Important dates', {'fields': ('last_login', 'date_joined')}),
     )
     add_fieldsets = (
@@ -60,3 +63,4 @@ class MyUserAdmin(UserAdmin):
     filter_horizontal = ()
 
 
+admin.site.register(User, AuthorAdmin)

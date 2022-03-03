@@ -29,7 +29,6 @@ ALLOWED_HOSTS = []
 # Application definition
 
 
-
 INSTALLED_APPS = [
     'jazzmin',
     "corsheaders",
@@ -41,7 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'account',
-    'news'
+    'news',
+    'guardian',
 ]
 
 MIDDLEWARE = [
@@ -137,3 +137,8 @@ MEDIA_ROOT = BASE_DIR / 'media'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'account.User'
 
+# Django guardian for per-object permissions
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'guardian.backends.ObjectPermissionBackend',
+)

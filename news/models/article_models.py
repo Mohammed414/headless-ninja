@@ -47,6 +47,7 @@ class Article(Entity):
         verbose_name_plural = 'Articles'
         ordering = ('-published_at',)
 
+
     def __str__(self):
         return self.title
 
