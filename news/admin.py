@@ -10,7 +10,10 @@ from django.db import models
 from guardian.admin import GuardedModelAdmin
 
 from news.models import Article, Category, ArticleImage, Image
+from news.models.category_models import UserCategory
+from django.contrib.auth import get_user_model
 
+User = get_user_model()
 admin.site.register(ArticleImage)
 
 
@@ -45,17 +48,11 @@ class ArticleAdmin(admin.ModelAdmin):
     inlines = [ArticleImageInline]
     exclude = ('images',)
 
-    # TODO alter category field only show categories that are in user's permissions
-    # def formfield_for_foreignkey(self, db_field, request, **kwargs):
-    #     if db_field.name == 'category':
-    #         kwargs['queryset'] = Category.objects.filter(
-    #             pk__in=request.user.get_all_permissions().values_list('content_type_id', flat=True)
-    #         )
-    #     return super().formfield_for_foreignkey(db_field, request, **kwargs)
-
+    # change form field for foreign key to show categories that are in relation with user (super user isn't included)
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
-        if db_field.name == 'category' and request.user.is_superuser:
-            kwargs['queryset'] = Category.objects.filter(title__startswith='c')
+        if db_field.name == "category" and not request.user.is_superuser:
+            kwargs["queryset"] = Category.objects.filter(
+                pk__in=UserCategory.objects.filter(user=request.user).values_list('category', flat=True))
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
     """
@@ -90,6 +87,9 @@ class ArticleAdmin(admin.ModelAdmin):
             return False
         return True
 
+    # TODO add security method to prevent users from adding categories that are not in relation with them
+
+
 
 @admin.register(Image)
 class ImageAdmin(admin.ModelAdmin):
@@ -104,4 +104,16 @@ class ImageAdmin(admin.ModelAdmin):
         )
 
 
+@admin.register(UserCategory)
+class UserCategoryAdmin(admin.ModelAdmin):
+    # for users forign key return only users that are not super users
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if db_field.name == "user" and request.user.is_superuser:
+            kwargs["queryset"] = User.objects.filter(is_superuser=False)
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
+
+    pass
+
+
 admin.site.register(Permission)
+admin.site.site_header = "News Admin"
