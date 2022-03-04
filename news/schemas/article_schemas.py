@@ -36,7 +36,7 @@ class AccountOut(Schema):
 
 class ArticleOut(ModelSchema):
     category: CategoryOut
-    images: Optional[List[str]] = []
+    photos: Optional[List[str]] = []
     published_at: date
 
     class Config:

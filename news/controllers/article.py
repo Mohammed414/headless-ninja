@@ -97,7 +97,7 @@ def get_articles(request, range: Optional[str] = None, page: Optional[int] = 1, 
         articles = []
         for article in articles_qs:
             article_images = get_article_images(article.id)
-            article.images = article_images
+            article.photos = article_images
             articles.append(article)
         # paginate the articles
         paginator = Paginator(articles_qs, 10)
