@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/3.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
-
+import os
 from pathlib import Path
 from decouple import config
 from corsheaders.defaults import default_headers
@@ -25,7 +25,7 @@ SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 # Application definition
 
 
@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
     'account',
     'news',
     'guardian',
@@ -63,6 +64,7 @@ ROOT_URLCONF = 'config.urls'
 
 CORS_ALLOWED_ORIGINS = [
     'http://127.0.0.1:3000',
+    'http://127.0.0.1:8000',
 ]
 
 TEMPLATES = [
@@ -128,6 +130,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 STATIC_URL = '/static/'
+STATICFILES_DIRS = [
+   os.path.join(BASE_DIR, 'checkstatic/static/')
+]
+
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
@@ -142,3 +148,47 @@ AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
     'guardian.backends.ObjectPermissionBackend',
 )
+# changing jazzmin theme
+JAZZMIN_UI_TWEAKS = {
+    "theme": "minty",
+}
+
+JAZZMIN_SETTINGS = {
+    # title of the window (Will default to current_admin_site.site_title if absent or None)
+    "site_title": "Library Admin",
+
+    # Title on the login screen (19 chars max) (defaults to current_admin_site.site_header if absent or None)
+    "site_header": "UOITC Next Generation ",
+
+    # Title on the brand (19 chars max) (defaults to current_admin_site.site_header if absent or None)
+    "site_brand": "UOITC Admin Panel",
+    "copyright": "UOITC Next Generation",
+
+    "welcome_sign": "Welcome to UOITC Admin Panel",
+    "site_logo": "images/uoitc_logo.png",
+
+    "custom_css": 'static/css/custom.css',
+    "show_ui_builder": True,
+    "changeform_format": "vertical_tabs",
+    "related_modal_active": True,
+    "icons": {
+        "news.article": "fa fa-newspaper",
+        "news.category": "fa fa-table",
+        "news.image": "fa fa-images",
+        "news.usercategory": "fa fa-user-tag",
+        "account.user": "fa fa-user",
+        "auth.group": "fa fa-users",
+    },
+    "custom_links": {
+        "news": [{
+            "name": "Make Messages",
+            "url": "make_messages",
+            "icon": "fas fa-comments",
+            "permissions": ["news.view_book"]
+        }]
+    },
+}
+# to allow related_modal_active to be true
+X_FRAME_OPTIONS = 'SAMEORIGIN'
+
+XS_SHARING_ALLOWED_METHODS = ['POST', 'GET', 'OPTIONS', 'PUT', 'DELETE']

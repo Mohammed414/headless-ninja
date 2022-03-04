@@ -1,0 +1,6 @@
+body.theme-minty a {
+    background-color: #991b1b;
+}
+body.theme-minty a:hover {
+    background-color: #a92424;
+}

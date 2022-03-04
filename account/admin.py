@@ -46,10 +46,11 @@ class UserCategoryInline(admin.TabularInline):
 class AuthorAdmin(UserAdmin):
     # don't show inlines only for superuser
     def get_inline_instances(self, request, obj=None):
-        if obj.is_superuser:
-            self.inlines = []
-        else:
-            self.inlines = [UserCategoryInline]
+        if obj:
+            if obj.is_superuser:
+                self.inlines = []
+            else:
+                self.inlines = [UserCategoryInline]
         return super(AuthorAdmin, self).get_inline_instances(request, obj)
 
     ordering = ('email',)

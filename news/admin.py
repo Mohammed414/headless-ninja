@@ -14,7 +14,6 @@ from news.models.category_models import UserCategory
 from django.contrib.auth import get_user_model
 
 User = get_user_model()
-admin.site.register(ArticleImage)
 
 
 @admin.register(Category)
@@ -115,5 +114,4 @@ class UserCategoryAdmin(admin.ModelAdmin):
     pass
 
 
-admin.site.register(Permission)
 admin.site.site_header = "News Admin"
