@@ -219,3 +219,5 @@ JAZZMIN_SETTINGS = {
 X_FRAME_OPTIONS = "SAMEORIGIN"
 
 XS_SHARING_ALLOWED_METHODS = ['POST', 'GET', 'OPTIONS', 'PUT', 'DELETE']
+import django_on_heroku
+django_on_heroku.settings(locals())
