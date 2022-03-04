@@ -119,7 +119,7 @@ def get_articles(request, range: Optional[str] = None, page: Optional[int] = 1, 
 })
 def retrieve_article(request, article_id: UUID4):
     article = get_object_or_404(Article, id=article_id)
-    article.__dict__['images'] = get_article_images(article_id)
+    article.__dict__['photos'] = get_article_images(article_id)
     return article
 
 
