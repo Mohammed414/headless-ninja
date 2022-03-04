@@ -216,6 +216,6 @@ JAZZMIN_SETTINGS = {
     },
 }
 # to allow related_modal_active to be true
-X_FRAME_OPTIONS = 'SAMEORIGIN'
+X_FRAME_OPTIONS = "SAMEORIGIN"
 
 XS_SHARING_ALLOWED_METHODS = ['POST', 'GET', 'OPTIONS', 'PUT', 'DELETE']
