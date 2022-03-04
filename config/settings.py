@@ -192,7 +192,7 @@ JAZZMIN_SETTINGS = {
     "copyright": "UOITC Next Generation",
 
     "welcome_sign": "Welcome to UOITC Admin Panel",
-    "site_logo": "images/uoitc_logo.png",
+    "site_logo": "images/uoitc_new_logo.png",
 
     "custom_css": '/css/main.css',
     "show_ui_builder": True,
