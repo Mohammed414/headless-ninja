@@ -131,7 +131,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
-   os.path.join(BASE_DIR, 'checkstatic/static/')
+   os.path.join(BASE_DIR, 'static')
 ]
 
 MEDIA_URL = '/media/'
@@ -150,9 +150,36 @@ AUTHENTICATION_BACKENDS = (
 )
 # changing jazzmin theme
 JAZZMIN_UI_TWEAKS = {
-    "theme": "minty",
+    "navbar_small_text": False,
+    "footer_small_text": False,
+    "body_small_text": False,
+    "brand_small_text": False,
+    "brand_colour": "navbar-white",
+    "accent": "accent-danger",
+    "navbar": "navbar-light",
+    "no_navbar_border": False,
+    "navbar_fixed": False,
+    "layout_boxed": False,
+    "footer_fixed": True,
+    "sidebar_fixed": True,
+    "sidebar": "sidebar-light-danger",
+    "sidebar_nav_small_text": False,
+    "sidebar_disable_expand": False,
+    "sidebar_nav_child_indent": False,
+    "sidebar_nav_compact_style": False,
+    "sidebar_nav_legacy_style": False,
+    "sidebar_nav_flat_style": False,
+    "theme": "spacelab",
+    "dark_mode_theme": None,
+    "button_classes": {
+        "primary": "btn-outline-primary",
+        "secondary": "btn-outline-secondary",
+        "info": "btn-outline-info",
+        "warning": "btn-outline-warning",
+        "danger": "btn-outline-danger",
+        "success": "btn-outline-success"
+    }
 }
-
 JAZZMIN_SETTINGS = {
     # title of the window (Will default to current_admin_site.site_title if absent or None)
     "site_title": "Library Admin",
@@ -167,10 +194,11 @@ JAZZMIN_SETTINGS = {
     "welcome_sign": "Welcome to UOITC Admin Panel",
     "site_logo": "images/uoitc_logo.png",
 
-    "custom_css": 'static/css/custom.css',
+    "custom_css": '/css/main.css',
     "show_ui_builder": True,
     "changeform_format": "vertical_tabs",
     "related_modal_active": True,
+    "user_avatar": "x",
     "icons": {
         "news.article": "fa fa-newspaper",
         "news.category": "fa fa-table",
@@ -181,10 +209,9 @@ JAZZMIN_SETTINGS = {
     },
     "custom_links": {
         "news": [{
-            "name": "Make Messages",
-            "url": "make_messages",
-            "icon": "fas fa-comments",
-            "permissions": ["news.view_book"]
+            "name": "University Website",
+            "url": "https://uoitc.edu.iq/",
+            "icon": "fas fa-building"
         }]
     },
 }
