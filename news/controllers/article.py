@@ -108,7 +108,6 @@ def get_articles(request, range: Optional[str] = None, page: Optional[int] = 1, 
             return 404, {"message": "Page not found"}
 
     """Page pagination ends here"""
-
     return articles_qs
 
 
